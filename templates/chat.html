@@ -29,10 +29,45 @@
     const input = document.getElementById("msg");
     const messages = document.getElementById("messages");
 
-    function appendMessage(text, sender) {
+    function appendUserMessage(text) {
       const bubble = document.createElement("div");
-      bubble.className = "bubble " + sender;
+      bubble.className = "bubble user";
       bubble.textContent = text;
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function appendBotMessage(data) {
+      const bubble = document.createElement("div");
+      bubble.className = "bubble bot";
+      if (data.confidence === "emergency") bubble.classList.add("emergency");
+      if (data.confidence === "low") bubble.classList.add("low-confidence");
+
+      const answerEl = document.createElement("div");
+      answerEl.className = "answer-text";
+      answerEl.textContent = data.answer;
+      bubble.appendChild(answerEl);
+
+      if (data.sources && data.sources.length > 0) {
+        const sourcesEl = document.createElement("div");
+        sourcesEl.className = "sources";
+
+        const title = document.createElement("div");
+        title.className = "sources-title";
+        title.textContent = "Sources";
+        sourcesEl.appendChild(title);
+
+        data.sources.forEach((s) => {
+          const item = document.createElement("div");
+          item.className = "source-item";
+          const page = s.page !== null && s.page !== undefined ? ` (p. ${s.page})` : "";
+          item.textContent = `${s.source}${page} — "${s.excerpt}..." (match ${s.score})`;
+          sourcesEl.appendChild(item);
+        });
+
+        bubble.appendChild(sourcesEl);
+      }
+
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
     }
@@ -42,14 +77,14 @@
       const text = input.value.trim();
       if (!text) return;
 
-      appendMessage(text, "user");
+      appendUserMessage(text);
       input.value = "";
 
       const body = new URLSearchParams({ msg: text });
       const response = await fetch("/get", { method: "POST", body });
-      const answer = await response.text();
+      const data = await response.json();
 
-      appendMessage(answer, "bot");
+      appendBotMessage(data);
     });
   </script>
 </body>
