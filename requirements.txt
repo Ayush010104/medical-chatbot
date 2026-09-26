@@ -9,3 +9,6 @@ pinecone-client
 sentence-transformers
 ctransformers
 pypdf
+pdfplumber
+pymupdf
+langchain-openai

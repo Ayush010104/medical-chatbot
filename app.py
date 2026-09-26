@@ -84,6 +84,8 @@ def chat():
             "page": doc.metadata.get("page"),
             "excerpt": doc.page_content[:200].strip(),
             "score": round(float(score), 3),
+            "content_type": doc.metadata.get("content_type", "text"),
+            "image_path": doc.metadata.get("image_path"),
         }
         for doc, score in results
     ]

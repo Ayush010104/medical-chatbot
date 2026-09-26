@@ -15,7 +15,10 @@ def text_split(documents, chunk_size: int = 500, chunk_overlap: int = 20):
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
     )
-    return splitter.split_documents(documents)
+    chunks = splitter.split_documents(documents)
+    for chunk in chunks:
+        chunk.metadata.setdefault("content_type", "text")
+    return chunks
 
 
 def download_hugging_face_embeddings():
