@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# large downloaded assets — keep out of git
+model/*.bin
+data/*.pdf
+!data/.gitkeep
+!model/.gitkeep
