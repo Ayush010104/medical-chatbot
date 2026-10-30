@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cancer Department — Feedback Review</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='review.css') }}" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Clinician Feedback Review</h1>
+    <p>Flags and ratings from the Cancer Department chatbot, most recent first. Deleting a graph
+      fact removes it from Neo4j permanently — it will never be surfaced again.</p>
+  </header>
+
+  <main>
+    {% if not feedback %}
+      <p class="empty">No open feedback right now.</p>
+    {% endif %}
+
+    {% for f in feedback %}
+      <section class="card {{ 'flagged' if f.rating == 'flagged' else '' }} {{ 'down' if f.rating == 'down' else '' }}">
+        <div class="card-header">
+          <span class="rating rating-{{ f.rating }}">{{ f.rating }}</span>
+          <span class="item-type">{{ f.item_type or 'answer' }}</span>
+          <span class="timestamp">{{ f.created_at }}</span>
+        </div>
+
+        <div class="question"><strong>Q:</strong> {{ f.question }}</div>
+
+        {% if f.answer %}
+          <div class="answer"><strong>Answer:</strong> {{ f.answer }}</div>
+        {% endif %}
+
+        {% if f.item_excerpt %}
+          <div class="excerpt">
+            <strong>Flagged item</strong> ({{ f.item_source }}):<br />
+            {{ f.item_excerpt }}
+          </div>
+        {% endif %}
+
+        <div class="actions">
+          {% if f.item_type == 'graph_fact' and f.item_meta and f.item_meta.subject %}
+            <form method="post" action="{{ url_for('cancer_review_delete_graph_fact') }}">
+              <input type="hidden" name="feedback_id" value="{{ f.id }}" />
+              <button type="submit" class="delete-btn"
+                onclick="return confirm('Permanently delete this relationship from the graph?');">
+                Delete from graph
+              </button>
+            </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('cancer_review_resolve') }}">
+            <input type="hidden" name="feedback_id" value="{{ f.id }}" />
+            <button type="submit" class="resolve-btn">Mark resolved</button>
+          </form>
+        </div>
+      </section>
+    {% endfor %}
+  </main>
+</body>
+</html>

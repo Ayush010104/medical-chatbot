@@ -1,0 +1,137 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 4px;
+}
+
+.page-header p {
+  color: #94a3b8;
+  max-width: 700px;
+  margin: 0 0 24px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 800px;
+}
+
+.empty {
+  color: #64748b;
+}
+
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.card.flagged {
+  border-left: 4px solid #f87171;
+}
+
+.card.down {
+  border-left: 4px solid #fbbf24;
+}
+
+.card-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.rating {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.rating-flagged {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.rating-down {
+  background: #78350f;
+  color: #fde68a;
+}
+
+.rating-up {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+.item-type {
+  background: #334155;
+  color: #cbd5e1;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.timestamp {
+  color: #64748b;
+  margin-left: auto;
+}
+
+.question,
+.answer,
+.excerpt {
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.excerpt {
+  background: #0f172a;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  color: #a5f3fc;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actions button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.delete-btn:hover {
+  background: #991b1b;
+}
+
+.resolve-btn {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.resolve-btn:hover {
+  background: #475569;
+}

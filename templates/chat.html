@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Medical Chatbot</title>
+  <title>{{ title | default('Medical Chatbot') }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
   <div class="chat-container">
-    <header class="chat-header">Medical Chatbot</header>
+    <header class="chat-header">{{ title | default('Medical Chatbot') }}</header>
 
     <div id="messages" class="messages"></div>
 
@@ -16,7 +16,7 @@
         id="msg"
         name="msg"
         type="text"
-        placeholder="Ask a medical question..."
+        placeholder="{{ placeholder | default('Ask a medical question...') }}"
         autocomplete="off"
         required
       />
@@ -28,6 +28,64 @@
     const form = document.getElementById("chat-form");
     const input = document.getElementById("msg");
     const messages = document.getElementById("messages");
+    const feedbackEndpoint = "{{ feedback_endpoint | default('') }}";
+
+    // Minimal, dependency-free markdown -> HTML for the subset the LLM
+    // actually produces (bold, numbered/bulleted lists, links). HTML-escapes
+    // first so nothing in the model's own output can inject markup or script,
+    // then only ever emits a small fixed set of safe tags.
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderInline(text) {
+      let html = escapeHtml(text);
+      html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (match, label, url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      });
+      // Bare URLs (not already inside an href) get linkified too, e.g. the
+      // "Link: https://..." lines the clinical-trials tool returns raw.
+      html = html.replace(
+        /(^|[^"'>])(https?:\/\/[^\s<]+)/g,
+        (match, prefix, url) => `${prefix}<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+      );
+      return html;
+    }
+
+    function renderMarkdown(text) {
+      const lines = text.split("\n");
+      const htmlParts = [];
+      let listType = null; // "ol" | "ul" | null
+
+      function closeList() {
+        if (listType) {
+          htmlParts.push(`</${listType}>`);
+          listType = null;
+        }
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        const numbered = line.match(/^(\d+)\.\s+(.*)/);
+        const bulleted = line.match(/^[-*]\s+(.*)/);
+
+        if (numbered) {
+          if (listType !== "ol") { closeList(); htmlParts.push("<ol>"); listType = "ol"; }
+          htmlParts.push(`<li>${renderInline(numbered[2])}</li>`);
+        } else if (bulleted) {
+          if (listType !== "ul") { closeList(); htmlParts.push("<ul>"); listType = "ul"; }
+          htmlParts.push(`<li>${renderInline(bulleted[1])}</li>`);
+        } else {
+          closeList();
+          if (line) htmlParts.push(`<p>${renderInline(line)}</p>`);
+        }
+      }
+      closeList();
+      return htmlParts.join("");
+    }
 
     function appendUserMessage(text) {
       const bubble = document.createElement("div");
@@ -37,7 +95,18 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    function appendBotMessage(data) {
+    function sendFeedback(payload, triggerEl, doneLabel) {
+      if (!feedbackEndpoint) return;
+      fetch(feedbackEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+      triggerEl.textContent = doneLabel;
+      triggerEl.disabled = true;
+    }
+
+    function appendBotMessage(data, question) {
       const bubble = document.createElement("div");
       bubble.className = "bubble bot";
       if (data.confidence === "emergency") bubble.classList.add("emergency");
@@ -45,8 +114,30 @@
 
       const answerEl = document.createElement("div");
       answerEl.className = "answer-text";
-      answerEl.textContent = data.answer;
+      answerEl.innerHTML = renderMarkdown(data.answer);
       bubble.appendChild(answerEl);
+
+      if (feedbackEndpoint && data.confidence === "normal") {
+        const rateEl = document.createElement("div");
+        rateEl.className = "answer-feedback";
+        const up = document.createElement("button");
+        up.type = "button";
+        up.className = "feedback-btn";
+        up.textContent = "\u{1F44D}";
+        up.onclick = () => sendFeedback(
+          { question, answer: data.answer, item_type: "answer", rating: "up" }, up, "\u{1F44D} Thanks"
+        );
+        const down = document.createElement("button");
+        down.type = "button";
+        down.className = "feedback-btn";
+        down.textContent = "\u{1F44E}";
+        down.onclick = () => sendFeedback(
+          { question, answer: data.answer, item_type: "answer", rating: "down" }, down, "\u{1F44E} Noted"
+        );
+        rateEl.appendChild(up);
+        rateEl.appendChild(down);
+        bubble.appendChild(rateEl);
+      }
 
       if (data.sources && data.sources.length > 0) {
         const sourcesEl = document.createElement("div");
@@ -58,11 +149,48 @@
         sourcesEl.appendChild(title);
 
         data.sources.forEach((s) => {
+          const row = document.createElement("div");
+          row.className = "source-row";
+
           const item = document.createElement("div");
-          item.className = "source-item";
-          const page = s.page !== null && s.page !== undefined ? ` (p. ${s.page})` : "";
-          item.textContent = `${s.source}${page} — "${s.excerpt}..." (match ${s.score})`;
-          sourcesEl.appendChild(item);
+          if (s.content_type === "graph_fact") {
+            item.className = "source-item graph-fact";
+            item.textContent = `${s.source} — ${s.excerpt}`;
+          } else if (s.content_type === "clinical_trial") {
+            item.className = "source-item clinical-trial";
+            item.innerHTML = renderInline(`${s.source}:\n${s.excerpt}`).replace(/\n/g, "<br>");
+          } else {
+            item.className = "source-item";
+            const page = s.page !== null && s.page !== undefined ? ` (p. ${s.page})` : "";
+            item.textContent = `${s.source}${page} — "${s.excerpt}..." (match ${s.score})`;
+          }
+          row.appendChild(item);
+
+          if (feedbackEndpoint) {
+            const flag = document.createElement("button");
+            flag.type = "button";
+            flag.className = "flag-btn";
+            flag.textContent = "\u{1F6A9} Flag";
+            flag.title = "Flag this source as incorrect or misleading";
+            flag.onclick = () => sendFeedback(
+              {
+                question,
+                item_type: s.content_type,
+                item_source: s.source,
+                item_excerpt: s.excerpt,
+                rating: "flagged",
+                subject: s.subject,
+                relation: s.relation,
+                object: s.object,
+                graph_source: s.graph_source,
+              },
+              flag,
+              "Flagged"
+            );
+            row.appendChild(flag);
+          }
+
+          sourcesEl.appendChild(row);
         });
 
         bubble.appendChild(sourcesEl);
@@ -81,10 +209,10 @@
       input.value = "";
 
       const body = new URLSearchParams({ msg: text });
-      const response = await fetch("/get", { method: "POST", body });
+      const response = await fetch("{{ endpoint | default('/get') }}", { method: "POST", body });
       const data = await response.json();
 
-      appendBotMessage(data);
+      appendBotMessage(data, text);
     });
   </script>
 </body>
