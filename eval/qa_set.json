@@ -1,0 +1,235 @@
+[
+  {
+    "id": "risk-01",
+    "category": "risk_factor",
+    "relational": true,
+    "question": "What is the estimated lifetime risk of developing breast cancer for women with BRCA1 or BRCA2 pathogenic variants?",
+    "expected_contains_any": ["40", "85"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "risk-02",
+    "category": "risk_factor",
+    "relational": true,
+    "question": "How does breast tissue density affect breast cancer risk?",
+    "expected_contains_any": ["1.79", "4.64", "density"],
+    "source_file": "breast-cancer-prevention-pdq.txt"
+  },
+  {
+    "id": "risk-03",
+    "category": "risk_factor",
+    "relational": true,
+    "question": "What is the relative risk of breast cancer for women consuming about four alcoholic drinks per day compared with nondrinkers?",
+    "expected_contains_any": ["1.32"],
+    "source_file": "breast-cancer-prevention-pdq.txt"
+  },
+  {
+    "id": "risk-04",
+    "category": "risk_factor",
+    "relational": false,
+    "question": "How much does combined estrogen-progestin hormone replacement therapy increase the incidence of invasive breast cancer?",
+    "expected_contains_any": ["26%", "26 percent"],
+    "source_file": "breast-cancer-prevention-pdq.txt"
+  },
+  {
+    "id": "risk-05",
+    "category": "risk_factor",
+    "relational": false,
+    "question": "In the Women's Health Initiative study, what was the relative risk of breast cancer comparing heavier women (over 82.2 kg) to lighter women (under 58.7 kg)?",
+    "expected_contains_any": ["2.85"],
+    "source_file": "breast-cancer-prevention-pdq.txt"
+  },
+  {
+    "id": "risk-06",
+    "category": "risk_factor",
+    "relational": false,
+    "question": "How does breastfeeding affect breast cancer risk?",
+    "expected_contains_any": ["4.3", "breast-feeding", "breastfeeding"],
+    "source_file": "breast-cancer-prevention-pdq.txt"
+  },
+  {
+    "id": "genetics-01",
+    "category": "genetics",
+    "relational": true,
+    "question": "Are BRCA1 and BRCA2 pathogenic variants more common in any particular ancestry group?",
+    "expected_contains_any": ["Jewish"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "genetics-02",
+    "category": "genetics",
+    "relational": true,
+    "question": "What hereditary syndrome is associated with mismatch repair gene variants and increased colorectal cancer risk?",
+    "expected_contains_any": ["Lynch"],
+    "source_file": "breast-ovarian-genetics-pdq.txt"
+  },
+  {
+    "id": "genetics-03",
+    "category": "genetics",
+    "relational": false,
+    "question": "What percentage of breast and ovarian cancer cases overall are attributable to BRCA1/BRCA2 pathogenic variants?",
+    "expected_contains_any": ["5%", "10%", "5 to 10"],
+    "source_file": "breast-ovarian-genetics-pdq.txt"
+  },
+  {
+    "id": "genetics-04",
+    "category": "genetics",
+    "relational": false,
+    "question": "What syndrome is associated with TP53 pathogenic variants and elevated breast cancer risk?",
+    "expected_contains_any": ["Li-Fraumeni"],
+    "source_file": "breast-ovarian-genetics-pdq.txt"
+  },
+  {
+    "id": "screen-01",
+    "category": "screening",
+    "relational": false,
+    "question": "At what age should average-risk women start mammography screening according to the current USPSTF recommendation, and how often?",
+    "expected_contains_any": ["40"],
+    "source_file": "breast-cancer-screening-pdq.txt"
+  },
+  {
+    "id": "screen-02",
+    "category": "screening",
+    "relational": false,
+    "question": "At what age should routine colon cancer screening begin for average-risk adults per this guideline?",
+    "expected_contains_any": ["50"],
+    "source_file": "colon-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "stage-01",
+    "category": "staging",
+    "relational": true,
+    "question": "What is the overall 5-year relative survival rate for lung cancer, and how does it differ by stage at diagnosis (local, regional, distant)?",
+    "expected_contains_any": ["27%", "64%", "36%", "9%"],
+    "source_file": "non-small-cell-lung-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "stage-02",
+    "category": "staging",
+    "relational": false,
+    "question": "How many lymph nodes does the AJCC recommend examining in colon cancer surgical specimens to confirm absence of nodal involvement?",
+    "expected_contains_any": ["12", "twelve"],
+    "source_file": "colon-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "stage-03",
+    "category": "staging",
+    "relational": true,
+    "question": "What breast cancer stages does this knowledge base have information on?",
+    "expected_contains_any": ["Stage I", "Stage II", "Stage III", "Stage 0"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "treat-01",
+    "category": "treatment",
+    "relational": true,
+    "question": "What drug is used for ER-positive breast cancer as hormone/endocrine therapy, commonly referenced in the treatment literature?",
+    "expected_contains_any": ["Tamoxifen", "tamoxifen"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "treat-02",
+    "category": "treatment",
+    "relational": false,
+    "question": "In the osimertinib adjuvant trial for resected EGFR-mutated NSCLC, what was the 5-year overall survival rate in the osimertinib group versus placebo?",
+    "expected_contains_any": ["88%", "78%"],
+    "source_file": "non-small-cell-lung-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "treat-03",
+    "category": "treatment",
+    "relational": true,
+    "question": "What immunotherapy drug was evaluated in combination with neoadjuvant chemotherapy for stage II and III triple-negative breast cancer in the KEYNOTE-522 trial?",
+    "expected_contains_any": ["Pembrolizumab", "pembrolizumab"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "treat-04",
+    "category": "treatment",
+    "relational": true,
+    "question": "Name a few drugs used to treat HER2-positive breast cancer, based on this knowledge base.",
+    "expected_contains_any": ["Trastuzumab", "Pertuzumab", "Margetuximab"],
+    "source_file": "breast-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "trial-01",
+    "category": "trial",
+    "relational": false,
+    "expects_tool_call": true,
+    "question": "Are there any currently recruiting clinical trials for triple-negative breast cancer?",
+    "expected_contains_any": ["NCT", "recruiting", "Recruiting"],
+    "source_file": null
+  },
+  {
+    "id": "trial-02",
+    "category": "trial",
+    "relational": false,
+    "expects_tool_call": true,
+    "question": "What active trials are recruiting patients with EGFR-mutated non-small cell lung cancer right now?",
+    "expected_contains_any": ["NCT", "recruiting", "Recruiting"],
+    "source_file": null
+  },
+  {
+    "id": "trial-03",
+    "category": "trial",
+    "relational": false,
+    "expects_tool_call": false,
+    "question": "What is the standard adjuvant chemotherapy regimen for stage III colon cancer?",
+    "expected_contains_any": [],
+    "source_file": "colon-cancer-treatment-pdq.txt"
+  },
+  {
+    "id": "oos-01",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What is the recommended screening interval for prostate-specific antigen (PSA) testing in average-risk men?",
+    "expected_contains_any": [],
+    "source_file": null
+  },
+  {
+    "id": "oos-02",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What is the first-line chemotherapy regimen for pancreatic adenocarcinoma?",
+    "expected_contains_any": [],
+    "source_file": null
+  },
+  {
+    "id": "oos-03",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What are the NCCN-recommended surveillance intervals after treatment for melanoma?",
+    "expected_contains_any": [],
+    "source_file": null
+  },
+  {
+    "id": "oos-04",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What is the capital of France?",
+    "expected_contains_any": [],
+    "source_file": null
+  },
+  {
+    "id": "oos-05",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What is the typical starting dose of metformin for a newly diagnosed type 2 diabetic?",
+    "expected_contains_any": [],
+    "source_file": null
+  },
+  {
+    "id": "oos-06",
+    "category": "out_of_scope",
+    "relational": false,
+    "expects_refusal": true,
+    "question": "What is the recommended treatment approach for pediatric acute lymphoblastic leukemia?",
+    "expected_contains_any": [],
+    "source_file": null
+  }
+]
